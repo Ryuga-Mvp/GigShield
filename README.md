@@ -570,11 +570,11 @@ These are the honest constraints of a university hackathon. The architecture is 
 
 | Name | Role | Responsibilities |
 |---|---|---|
-| [Team Member 1] | Backend Lead — Spring Boot Core | Spring Boot project setup, REST controllers (Workers, Policies, Claims, Payouts), Spring Data JPA entities & repositories, Supabase/PostgreSQL integration, application configuration |
-| [Team Member 2] | Backend — Trigger Engine & Integrations | TriggerEngineService (scheduled polling every 10 min), OpenWeatherMap API integration, PremiumCalcService, mock API controllers (AQI, Curfew, Platform Activity), Razorpay sandbox integration |
-| [Team Member 3] | ML Engineer — Python Service | Synthetic data generation, XGBoost risk model training, Isolation Forest fraud model training, Flask/FastAPI service with `/score-risk` and `/score-fraud` endpoints, REST integration with Spring Boot |
-| [Team Member 4] | Frontend Developer — React PWA | React PWA setup with Tailwind CSS, Onboarding & WorkerDashboard pages, PremiumCard & DisruptionSimulator components, UPI deep links, Browser Push API notifications |
-| [Team Member 5] | Frontend — Admin Dashboard & QA | AdminPanel page, RiskHeatmap with Leaflet.js + OpenStreetMap, end-to-end integration testing, demo data seeding, pitch deck & 5-min demo video |
+| [Diptesh Khandual] | Backend Lead — Spring Boot Core | Spring Boot project setup, REST controllers (Workers, Policies, Claims, Payouts), Spring Data JPA entities & repositories, Supabase/PostgreSQL integration, application configuration |
+| [Suman Kumar Sahu] | Backend — Trigger Engine & Integrations | TriggerEngineService (scheduled polling every 10 min), OpenWeatherMap API integration, PremiumCalcService, mock API controllers (AQI, Curfew, Platform Activity), Razorpay sandbox integration |
+| [Dancy Paul] | ML Engineer — Python Service | Synthetic data generation, XGBoost risk model training, Isolation Forest fraud model training, Flask/FastAPI service with `/score-risk` and `/score-fraud` endpoints, REST integration with Spring Boot |
+| [Harshita Pattnaik] | Frontend Developer — React PWA | React PWA setup with Tailwind CSS, Onboarding & WorkerDashboard pages, PremiumCard & DisruptionSimulator components, UPI deep links, Browser Push API notifications |
+| [Durga Prasad Naik] | Frontend — Admin Dashboard & QA | AdminPanel page, RiskHeatmap with Leaflet.js + OpenStreetMap, end-to-end integration testing, demo data seeding, pitch deck |
 
 ---
 
