@@ -28,7 +28,7 @@ Worker files a claim           Fraud check runs (seconds)
      ↓                              ↓
 Adjuster investigates          Claim approved automatically
      ↓                              ↓
-Decision in 2–6 weeks          ₹250 in UPI within 10 minutes
+Decision in 2-6 weeks          Rs250 in UPI within 10 minutes
      ↓
 Maybe rejected
 ```
@@ -49,23 +49,23 @@ We chose food delivery over e-commerce or grocery delivery for three concrete re
 
 ### Scenario 1 — Heavy Monsoon Rain (Most Common)
 
-> **Rahul**, 28, delivers for Zomato in Mumbai's Dharavi zone. Average daily earnings: ₹580.
+> **Rahul**, 28, delivers for Zomato in Mumbai's Dharavi zone. Average daily earnings: Rs580.
 > On July 14, the IMD issues a red alert and rainfall hits 32mm/hr by 11am. Zomato orders
 > in his zone drop to near zero. Rahul stays home and earns nothing.
 >
 > **With GigShield:** At 11:20am, the trigger engine detects rainfall exceeding 15mm/hr
 > sustained for 2 hours in Zone MUM-04. Rahul's policy is active and his fraud score is 9 (clean).
-> By 11:35am, ₹250 is credited to his UPI. He gets a notification:
-> *"Heavy rain detected in your zone. ₹250 transferred to your account. Stay safe."*
+> By 11:35am, Rs250 is credited to his UPI. He gets a notification:
+> *"Heavy rain detected in your zone. Rs250 transferred to your account. Stay safe."*
 
 ### Scenario 2 — Extreme Heat Event (North India Summer)
 
-> **Priya**, 31, delivers for Swiggy in Delhi's Laxmi Nagar zone. Average daily earnings: ₹520.
+> **Priya**, 31, delivers for Swiggy in Delhi's Laxmi Nagar zone. Average daily earnings: Rs520.
 > In May, a heat wave pushes the temperature to 46°C by 1pm. IMD issues a heat advisory.
 > Swiggy's data shows order volumes drop by 55% as restaurants reduce staff.
 >
 > **With GigShield:** Temperature in Zone DEL-07 exceeds 44°C for 4 continuous hours.
-> System triggers an income disruption event. Priya's ₹150 partial-day payout is processed
+> System triggers an income disruption event. Priya's Rs150 partial-day payout is processed
 > automatically. She didn't file anything — she was asleep under a fan.
 
 ### Scenario 3 — Fraud Attempt (System Catches It)
@@ -84,37 +84,37 @@ We chose food delivery over e-commerce or grocery delivery for three concrete re
 
 ```mermaid
 graph TB
-    subgraph EXT["External Data Sources"]
+    subgraph EXT[External Data Sources]
         W1[OpenWeatherMap API]
-        W2[IQAir / CPCB]
+        W2[IQAir CPCB]
         W3[NDMA Alert Feed]
         W4[Mock Platform API]
     end
 
-    subgraph CORE["Core Backend - Spring Boot Java 17+"]
+    subgraph CORE[Core Backend Spring Boot Java 17]
         TE[Trigger Engine]
         RE[AI Risk Engine]
         FD[Fraud Detector]
     end
 
-    subgraph ML["ML Service - Python + Flask/FastAPI"]
-        RM[Risk Model - XGBoost]
-        FM[Fraud Model - Isolation Forest]
+    subgraph ML[ML Service Python Flask]
+        RM[Risk Model XGBoost]
+        FM[Fraud Model Isolation Forest]
     end
 
-    subgraph SVC["Microservices"]
+    subgraph SVC[Microservices]
         CS[Claims Service]
         PS[Policy Service]
         PY[Payout Service]
     end
 
-    subgraph DB["Database - PostgreSQL on Supabase"]
+    subgraph DB[Database PostgreSQL Supabase]
         D1[(Workers and Zones)]
         D2[(Policies)]
         D3[(Claims and Payouts)]
     end
 
-    subgraph FE["Frontend - React PWA"]
+    subgraph FE[Frontend React PWA]
         WA[Worker App]
         AD[Admin Dashboard]
     end
@@ -122,16 +122,22 @@ graph TB
     EXT --> TE
     TE --> CS
     RE --> PS
-    RE <--> RM
-    FD <--> FM
+    RE --> RM
+    RM --> RE
+    FD --> FM
+    FM --> FD
     CS --> FD
     FD --> PY
     CS --> D3
     PS --> D2
     PY --> D3
     RE --> D1
-    D1 & D2 & D3 --> WA
-    D1 & D2 & D3 --> AD
+    D1 --> WA
+    D2 --> WA
+    D3 --> WA
+    D1 --> AD
+    D2 --> AD
+    D3 --> AD
 ```
 
 ---
@@ -181,15 +187,15 @@ Premiums are auto-deducted weekly via UPI AutoPay, aligned with the typical Zoma
 ### Pricing Formula
 
 ```
-weekly_premium = base_rate × zone_multiplier × season_factor × claim_history_adj
+weekly_premium = base_rate x zone_multiplier x season_factor x claim_history_adj
 ```
 
 | Variable | Range | Description |
 |---|---|---|
-| `base_rate` | ₹20 | Silver tier baseline |
-| `zone_multiplier` | 0.75 – 1.60 | Historical disruption frequency of the worker's zone |
-| `season_factor` | 1.0 – 1.40 | Peaks during monsoon (June–September) |
-| `claim_history_adj` | 0.90 – 1.25 | Slight surcharge for frequent claimants |
+| `base_rate` | Rs20 | Silver tier baseline |
+| `zone_multiplier` | 0.75 to 1.60 | Historical disruption frequency of the worker's zone |
+| `season_factor` | 1.0 to 1.40 | Peaks during monsoon (June–September) |
+| `claim_history_adj` | 0.90 to 1.25 | Slight surcharge for frequent claimants |
 
 ### How the Premium Is Calculated
 
@@ -197,18 +203,20 @@ weekly_premium = base_rate × zone_multiplier × season_factor × claim_history_
 flowchart LR
     A[Worker registers] --> B[Zone assigned]
     B --> C[XGBoost Risk Model]
-    C --> D[zone_multiplier: 0.75-1.60]
+    C --> D[zone multiplier 0.75 to 1.60]
 
     E[Onboarding date] --> F[Season lookup table]
-    F --> G[season_factor: 1.0-1.40]
+    F --> G[season factor 1.0 to 1.40]
 
-    H[Claim history from DB] --> I[claim_history_adj: 0.90-1.25]
+    H[Claim history from DB] --> I[claim history adj 0.90 to 1.25]
 
-    D & G & I --> J[Final weekly premium]
+    D --> J[Final weekly premium]
+    G --> J
+    I --> J
     J --> K{Assign tier}
-    K -- Rs10-Rs18 --> L[Bronze: Rs1000 coverage]
-    K -- Rs18-Rs25 --> M[Silver: Rs1500 coverage]
-    K -- Rs25-Rs35 --> N[Gold: Rs2500 coverage]
+    K -- Rs10 to Rs18 --> L[Bronze Rs1000 coverage]
+    K -- Rs18 to Rs25 --> M[Silver Rs1500 coverage]
+    K -- Rs25 to Rs35 --> N[Gold Rs2500 coverage]
 ```
 
 ### Example Calculation
@@ -216,11 +224,11 @@ flowchart LR
 Rahul, Dharavi zone (high flood history), July monsoon, no prior claims:
 
 ```
-₹20  ×  1.40 (high-risk zone)  ×  1.40 (monsoon season)  ×  0.90 (no claims)
-= ₹35.28  →  rounded to ₹35/week
+Rs20 x 1.40 (high-risk zone) x 1.40 (monsoon season) x 0.90 (no claims)
+= Rs35.28 rounded to Rs35/week
 ```
 
-At ₹580/day earnings, **₹35/week = 0.86% of weekly income** — less than one skipped delivery.
+At Rs580/day earnings, **Rs35/week = 0.86% of weekly income** — less than one skipped delivery.
 
 ---
 
@@ -230,22 +238,23 @@ All triggers are based on objective, third-party verifiable data. No worker self
 
 ```mermaid
 graph LR
-    subgraph SOURCES["Data Sources"]
-        S1[OpenWeatherMap - Live]
-        S2[IQAir / CPCB - Mocked]
-        S3[NDMA Alerts - Mocked]
-        S4[Platform Health - Mocked]
+    subgraph SOURCES[Data Sources]
+        S1[OpenWeatherMap Live]
+        S2[IQAir CPCB Mocked]
+        S3[NDMA Alerts Mocked]
+        S4[Platform Health Mocked]
     end
 
-    subgraph TRIGGERS["Parametric Triggers"]
-        T1[T1 - Heavy Rainfall]
-        T2[T2 - Extreme Heat]
-        T3[T3 - Severe Pollution]
-        T4[T4 - Govt Curfew]
-        T5[T5 - Platform Outage]
+    subgraph TRIGGERS[Parametric Triggers]
+        T1[T1 Heavy Rainfall]
+        T2[T2 Extreme Heat]
+        T3[T3 Severe Pollution]
+        T4[T4 Govt Curfew]
+        T5[T5 Platform Outage]
     end
 
-    S1 --> T1 & T2
+    S1 --> T1
+    S1 --> T2
     S2 --> T3
     S3 --> T4
     S4 --> T5
@@ -253,11 +262,11 @@ graph LR
 
 | # | Event | Data Source | Threshold | Max Payout |
 |---|---|---|---|---|
-| T1 | Heavy rainfall | OpenWeatherMap (live) | > 15mm/hr for ≥ 2 hrs | ₹300/day |
-| T2 | Extreme heat | OpenWeatherMap (live) | > 44°C for ≥ 4 hrs | ₹200/day |
-| T3 | Severe air pollution | IQAir / CPCB (mocked) | AQI > 400 for ≥ 6 hrs | ₹100/half-day |
-| T4 | Government curfew | NDMA feed (mocked) | Any active curfew in zone | ₹300/full day |
-| T5 | Platform outage | Mock health-check API | > 30 min confirmed outage | ₹300 capped |
+| T1 | Heavy rainfall | OpenWeatherMap (live) | > 15mm/hr for 2+ hrs | Rs300/day |
+| T2 | Extreme heat | OpenWeatherMap (live) | > 44°C for 4+ hrs | Rs200/day |
+| T3 | Severe air pollution | IQAir / CPCB (mocked) | AQI > 400 for 6+ hrs | Rs100/half-day |
+| T4 | Government curfew | NDMA feed (mocked) | Any active curfew in zone | Rs300/full day |
+| T5 | Platform outage | Mock health-check API | > 30 min confirmed outage | Rs300 capped |
 
 ---
 
@@ -265,34 +274,32 @@ graph LR
 
 ```mermaid
 flowchart TD
-    A[Disruption event fires for zone] --> B
+    A[Disruption event fires for zone] --> B{Deliveries completed during window?}
 
-    subgraph LAYER1["Layer 1 - Hard Rules"]
-        B{Deliveries completed during window?}
-        B -- Yes --> X1[+50 fraud points]
-        B -- No --> C
-
-        C{GPS inside declared zone?}
-        C -- No --> X2[+40 fraud points]
-        C -- Yes --> D
-
-        D{More than 3 claims in 30 days?}
-        D -- Yes --> X3[+20 fraud points]
-        D -- No --> E[Layer 1 score: 0]
+    subgraph LAYER1[Layer 1 Hard Rules]
+        B -- Yes --> X1[plus 50 fraud points]
+        B -- No --> C{GPS inside declared zone?}
+        C -- No --> X2[plus 40 fraud points]
+        C -- Yes --> D{More than 3 claims in 30 days?}
+        D -- Yes --> X3[plus 20 fraud points]
+        D -- No --> E[Layer 1 score 0]
     end
 
-    X1 & X2 & X3 & E --> F
+    X1 --> F
+    X2 --> F
+    X3 --> F
+    E --> F
 
-    subgraph LAYER2["Layer 2 - Isolation Forest ML"]
-        F[Anomaly detection on claim behaviour] --> G[Anomaly score: 0-50 points]
+    subgraph LAYER2[Layer 2 Isolation Forest ML]
+        F[Anomaly detection on claim behaviour] --> G[Anomaly score 0 to 50 points]
     end
 
-    G --> H[Combined fraud score: Layer 1 + Layer 2]
+    G --> H[Combined fraud score Layer 1 plus Layer 2]
 
     H --> I{Score threshold}
-    I -- Less than 30 --> J[Auto-approve - Payout in 10 min]
-    I -- 30 to 70 --> K[Manual review - 1 hour queue]
-    I -- More than 70 --> L[Auto-reject - Notify worker]
+    I -- Less than 30 --> J[Auto-approve Payout in 10 min]
+    I -- 30 to 70 --> K[Manual review 1 hour queue]
+    I -- More than 70 --> L[Auto-reject Notify worker]
 
     style J fill:#e8f5e9,stroke:#2e7d32
     style K fill:#fff8e1,stroke:#f57f17
@@ -403,13 +410,13 @@ erDiagram
         timestamp processed_at
     }
 
-    WORKERS ||--o{ POLICIES : "has"
-    WORKERS ||--o{ CLAIMS : "files"
-    ZONES ||--o{ WORKERS : "contains"
-    ZONES ||--o{ DISRUPTION_EVENTS : "affects"
-    POLICIES ||--o{ PREMIUMS_PAID : "collects"
-    DISRUPTION_EVENTS ||--o{ CLAIMS : "triggers"
-    CLAIMS ||--|| PAYOUTS : "results in"
+    WORKERS ||--o{ POLICIES : has
+    WORKERS ||--o{ CLAIMS : files
+    ZONES ||--o{ WORKERS : contains
+    ZONES ||--o{ DISRUPTION_EVENTS : affects
+    POLICIES ||--o{ PREMIUMS_PAID : collects
+    DISRUPTION_EVENTS ||--o{ CLAIMS : triggers
+    CLAIMS ||--|| PAYOUTS : results_in
 ```
 
 ---
@@ -476,7 +483,7 @@ gigshield/
 │   │   │   ├── WorkerDashboard.jsx
 │   │   │   └── AdminPanel.jsx
 │   │   └── components/
-│   │       ├── DisruptionSimulator.jsx   # "Trigger fake rainstorm" button for demo
+│   │       ├── DisruptionSimulator.jsx   # Trigger fake rainstorm button for demo
 │   │       ├── RiskHeatmap.jsx           # Leaflet.js zone map
 │   │       └── PremiumCard.jsx
 │   └── package.json
@@ -516,11 +523,10 @@ These are the honest constraints of a university hackathon. The architecture is 
 
 | Name | Role | Responsibilities |
 |---|---|---|
-| Diptesh Khandual | Backend Lead — Spring Boot Core | Spring Boot project setup, REST controllers (Workers, Policies, Claims, Payouts), Spring Data JPA entities & repositories, Supabase/PostgreSQL integration, application configuration |
-| Harshita Pattnaik & Diptesh Khandual| Backend & Frontend — Trigger Engine + React PWA | TriggerEngineService (scheduled polling every 10 min), OpenWeatherMap API integration, PremiumCalcService, React PWA setup with Tailwind CSS, Onboarding & WorkerDashboard pages, UPI deep links, Browser Push API notifications |
-| Dancy Paul | ML Engineer — Python Service | Synthetic data generation, XGBoost risk model training, Isolation Forest fraud model training, Flask/FastAPI service with `/score-risk` and `/score-fraud` endpoints, REST integration with Spring Boot |
-| Suman Kumar Sahu | ML Engineer — Python Service | Synthetic data generation support, model evaluation & tuning, Flask/FastAPI service testing, mock API controllers (AQI, Curfew, Platform Activity), Razorpay sandbox integration |
-| Durga Prasad Naik | Frontend — Admin Dashboard & QA | AdminPanel page, RiskHeatmap with Leaflet.js + OpenStreetMap, end-to-end integration testing, demo data seeding, pitch deck |
+| Diptesh Khandual and Harshita Pattnaik | Backend and Frontend — Spring Boot Core + Trigger Engine + React PWA | Spring Boot project setup, REST controllers (Workers, Policies, Claims, Payouts), Spring Data JPA entities and repositories, Supabase/PostgreSQL integration, TriggerEngineService (scheduled polling every 10 min), OpenWeatherMap API integration, PremiumCalcService, React PWA setup with Tailwind CSS, Onboarding and WorkerDashboard pages, UPI deep links, Browser Push API notifications |
+| Dancy Paul | ML Engineer — Python Service | Synthetic data generation, XGBoost risk model training, Isolation Forest fraud model training, Flask/FastAPI service with /score-risk and /score-fraud endpoints, REST integration with Spring Boot |
+| Suman Kumar Sahu | ML Engineer — Python Service | Synthetic data generation support, model evaluation and tuning, Flask/FastAPI service testing, mock API controllers (AQI, Curfew, Platform Activity), Razorpay sandbox integration |
+| Durga Prasad Naik | Frontend — Admin Dashboard and QA | AdminPanel page, RiskHeatmap with Leaflet.js and OpenStreetMap, end-to-end integration testing, demo data seeding, pitch deck |
 
 ---
 
