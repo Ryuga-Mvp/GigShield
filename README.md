@@ -85,38 +85,38 @@ We chose food delivery over e-commerce or grocery delivery for three concrete re
 ```mermaid
 graph TB
     subgraph EXT["External Data Sources"]
-        W1[OpenWeatherMap API\nRainfall · Temperature]
-        W2[IQAir / CPCB\nAQI Data]
-        W3[NDMA Alert Feed\nCurfew · Disasters]
-        W4[Mock Platform API\nDelivery Activity]
+        W1[OpenWeatherMap API]
+        W2[IQAir / CPCB]
+        W3[NDMA Alert Feed]
+        W4[Mock Platform API]
     end
 
-    subgraph CORE["Core Backend — Spring Boot (Java 17+)"]
-        TE[Trigger Engine\nPolls every 10 min]
-        RE[AI Risk Engine\nPremium Calculator]
-        FD[Fraud Detector\nRule + ML Layer]
+    subgraph CORE["Core Backend - Spring Boot Java 17+"]
+        TE[Trigger Engine]
+        RE[AI Risk Engine]
+        FD[Fraud Detector]
     end
 
-    subgraph ML["ML Service — Python + Flask/FastAPI"]
-        RM[Risk Model\nXGBoost]
-        FM[Fraud Model\nIsolation Forest]
+    subgraph ML["ML Service - Python + Flask/FastAPI"]
+        RM[Risk Model - XGBoost]
+        FM[Fraud Model - Isolation Forest]
     end
 
     subgraph SVC["Microservices"]
-        CS[Claims Service\nAuto-initiation]
-        PS[Policy Service\nWeekly Renewal]
-        PY[Payout Service\nUPI Transfer]
+        CS[Claims Service]
+        PS[Policy Service]
+        PY[Payout Service]
     end
 
-    subgraph DB["Database — PostgreSQL on Supabase"]
-        D1[(Workers & Zones)]
+    subgraph DB["Database - PostgreSQL on Supabase"]
+        D1[(Workers and Zones)]
         D2[(Policies)]
-        D3[(Claims & Payouts)]
+        D3[(Claims and Payouts)]
     end
 
-    subgraph FE["Frontend — React PWA"]
-        WA[Worker App\nMobile-first]
-        AD[Admin Dashboard\nAnalytics + Heatmap]
+    subgraph FE["Frontend - React PWA"]
+        WA[Worker App]
+        AD[Admin Dashboard]
     end
 
     EXT --> TE
@@ -142,26 +142,26 @@ graph TB
 flowchart TD
     A([Worker opens GigShield PWA]) --> B[Register with phone number]
     B --> C[Select operating city and zone]
-    C --> D{AI Risk Engine scores\nzone + profile}
-    D --> E[Weekly premium quoted\n₹15 – ₹35 per week]
+    C --> D{AI Risk Engine scores zone}
+    D --> E[Weekly premium quoted]
     E --> F[Worker pays via UPI AutoPay]
-    F --> G([Policy active ✓])
+    F --> G([Policy active])
 
-    G --> H[[Trigger Engine polls APIs\nevery 10 minutes]]
+    G --> H[[Trigger Engine polls APIs every 10 min]]
 
-    H --> I{Disruption threshold\ncrossed in worker's zone?}
+    H --> I{Disruption threshold crossed?}
     I -- No --> H
-    I -- Yes --> J[Identify all active insured\nworkers in that zone]
+    I -- Yes --> J[Identify insured workers in zone]
 
-    J --> K{Fraud Detector\nruns per worker}
+    J --> K{Fraud Detector runs per worker}
 
     K -- Score below 30 --> L[Auto-approve claim]
     K -- Score 30 to 70 --> M[Manual review queue]
-    K -- Score above 70 --> N[Auto-reject + flag]
+    K -- Score above 70 --> N[Auto-reject and flag]
 
-    L --> O[UPI payout processed\nwithin 10 minutes]
-    O --> P[Push notification sent\nto worker]
-    P --> Q([Admin dashboard updated\nloss ratio · claim log · heatmap])
+    L --> O[UPI payout processed within 10 min]
+    O --> P[Push notification sent to worker]
+    P --> Q([Admin dashboard updated])
 
     style A fill:#e8f5e9,stroke:#388e3c
     style G fill:#e8f5e9,stroke:#388e3c
@@ -196,19 +196,19 @@ weekly_premium = base_rate × zone_multiplier × season_factor × claim_history_
 ```mermaid
 flowchart LR
     A[Worker registers] --> B[Zone assigned]
-    B --> C[XGBoost Risk Model\nscores zone history]
-    C --> D[zone_multiplier\n0.75 – 1.60]
+    B --> C[XGBoost Risk Model]
+    C --> D[zone_multiplier: 0.75-1.60]
 
     E[Onboarding date] --> F[Season lookup table]
-    F --> G[season_factor\n1.0 – 1.40]
+    F --> G[season_factor: 1.0-1.40]
 
-    H[Claim history\nfrom database] --> I[claim_history_adj\n0.90 – 1.25]
+    H[Claim history from DB] --> I[claim_history_adj: 0.90-1.25]
 
-    D & G & I --> J["₹20 × multipliers\n= Final weekly premium"]
+    D & G & I --> J[Final weekly premium]
     J --> K{Assign tier}
-    K -- "₹10–₹18" --> L[Bronze\n₹1,000 coverage]
-    K -- "₹18–₹25" --> M[Silver ⭐\n₹1,500 coverage]
-    K -- "₹25–₹35" --> N[Gold\n₹2,500 coverage]
+    K -- Rs10-Rs18 --> L[Bronze: Rs1000 coverage]
+    K -- Rs18-Rs25 --> M[Silver: Rs1500 coverage]
+    K -- Rs25-Rs35 --> N[Gold: Rs2500 coverage]
 ```
 
 ### Example Calculation
@@ -231,18 +231,18 @@ All triggers are based on objective, third-party verifiable data. No worker self
 ```mermaid
 graph LR
     subgraph SOURCES["Data Sources"]
-        S1[OpenWeatherMap\nLive API]
-        S2[IQAir / CPCB\nMocked]
-        S3[NDMA Alerts\nMocked]
-        S4[Platform Health\nMocked]
+        S1[OpenWeatherMap - Live]
+        S2[IQAir / CPCB - Mocked]
+        S3[NDMA Alerts - Mocked]
+        S4[Platform Health - Mocked]
     end
 
     subgraph TRIGGERS["Parametric Triggers"]
-        T1["T1 · Heavy Rainfall\nthreshold: 15mm/hr × 2hrs\npayout: up to ₹300/day"]
-        T2["T2 · Extreme Heat\nthreshold: 44°C × 4hrs\npayout: up to ₹200/day"]
-        T3["T3 · Severe Pollution\nthreshold: AQI 400 × 6hrs\npayout: ₹100/half-day"]
-        T4["T4 · Govt Curfew\nthreshold: any active order\npayout: ₹300/full day"]
-        T5["T5 · Platform Outage\nthreshold: 30 min down\npayout: ₹75/hr max 4hrs"]
+        T1[T1 - Heavy Rainfall]
+        T2[T2 - Extreme Heat]
+        T3[T3 - Severe Pollution]
+        T4[T4 - Govt Curfew]
+        T5[T5 - Platform Outage]
     end
 
     S1 --> T1 & T2
@@ -265,34 +265,34 @@ graph LR
 
 ```mermaid
 flowchart TD
-    A[Disruption event fires\nfor worker's zone] --> B
+    A[Disruption event fires for zone] --> B
 
-    subgraph LAYER1["Layer 1 — Hard Rules  fast"]
-        B{Completed deliveries\nduring disruption window?}
+    subgraph LAYER1["Layer 1 - Hard Rules"]
+        B{Deliveries completed during window?}
         B -- Yes --> X1[+50 fraud points]
         B -- No --> C
 
-        C{GPS location inside\ndeclared zone?}
+        C{GPS inside declared zone?}
         C -- No --> X2[+40 fraud points]
         C -- Yes --> D
 
-        D{More than 3 claims\nin last 30 days?}
+        D{More than 3 claims in 30 days?}
         D -- Yes --> X3[+20 fraud points]
         D -- No --> E[Layer 1 score: 0]
     end
 
     X1 & X2 & X3 & E --> F
 
-    subgraph LAYER2["Layer 2 — Isolation Forest ML"]
-        F[Anomaly detection\non claim behaviour] --> G[Anomaly score\n0 – 50 points]
+    subgraph LAYER2["Layer 2 - Isolation Forest ML"]
+        F[Anomaly detection on claim behaviour] --> G[Anomaly score: 0-50 points]
     end
 
-    G --> H[Combined fraud score\nLayer 1 + Layer 2]
+    G --> H[Combined fraud score: Layer 1 + Layer 2]
 
     H --> I{Score threshold}
-    I -- "< 30" --> J["✅ Auto-approve\nPayout in < 10 min"]
-    I -- "30 – 70" --> K[⏳ Manual review\n1-hour queue]
-    I -- "> 70" --> L[❌ Auto-reject\nNotify worker]
+    I -- Less than 30 --> J[Auto-approve - Payout in 10 min]
+    I -- 30 to 70 --> K[Manual review - 1 hour queue]
+    I -- More than 70 --> L[Auto-reject - Notify worker]
 
     style J fill:#e8f5e9,stroke:#2e7d32
     style K fill:#fff8e1,stroke:#f57f17
