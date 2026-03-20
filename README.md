@@ -431,20 +431,6 @@ erDiagram
 
 ---
 
-## Platform Choice: Web PWA over Native Mobile
-
-We chose a **Progressive Web App (React.js)** over native Android/iOS for the following reasons:
-
-| Consideration | PWA ✅ | Native Mobile |
-|---|---|---|
-| Build time (6 weeks) | One codebase | 2–3× more effort |
-| Demo for judges | Opens in any browser | Requires APK install |
-| Device reach | Android + iOS + Desktop | Platform-specific |
-| GPS + notifications | Supported in modern browsers | Yes |
-| UPI deep links | Supported | Yes |
-
-A PWA installs to the home screen on Android, which is the primary device of our target persona. For a hackathon, it removes app store friction entirely.
-
 ---
 
 ## Project Structure
@@ -502,44 +488,6 @@ gigshield/
     ├── AqiMockController.java
     ├── CurfewAlertMockController.java
     └── PlatformActivityMockController.java
-```
-
----
-
-## Development Plan
-
-```mermaid
-gantt
-    title GigShield — 6-Week Development Roadmap
-    dateFormat  YYYY-MM-DD
-    axisFormat  %b %d
-
-    section Phase 1 · Ideation
-    Team setup + repo + README         :done,    p1a, 2026-03-04, 3d
-    Database schema design             :done,    p1b, 2026-03-04, 3d
-    Backend scaffold + Supabase        :done,    p1c, 2026-03-07, 4d
-    Synthetic ML training data         :done,    p1d, 2026-03-07, 4d
-    OpenWeatherMap integration         :done,    p1e, 2026-03-11, 4d
-    Trigger engine core logic          :done,    p1f, 2026-03-11, 4d
-    Train risk model + Flask API       :done,    p1g, 2026-03-14, 4d
-    Phase 1 video + submission         :done,    p1h, 2026-03-18, 2d
-
-    section Phase 2 · Automation
-    Worker registration flow           :active,  p2a, 2026-03-21, 5d
-    Zone map + premium quote UI        :         p2b, 2026-03-21, 5d
-    Policy creation + renewal logic    :         p2c, 2026-03-26, 4d
-    Claim auto-initiation flow         :         p2d, 2026-03-26, 4d
-    Fraud detector rule + ML           :         p2e, 2026-03-30, 3d
-    All 5 triggers wired up            :         p2f, 2026-03-30, 3d
-    End-to-end test + Phase 2 video    :         p2g, 2026-04-02, 2d
-
-    section Phase 3 · Scale
-    Admin analytics dashboard          :         p3a, 2026-04-05, 5d
-    Geo-risk heatmap                   :         p3b, 2026-04-05, 4d
-    Advanced fraud features            :         p3c, 2026-04-08, 4d
-    Razorpay sandbox + notification    :         p3d, 2026-04-10, 3d
-    Full QA + demo data seed           :         p3e, 2026-04-13, 2d
-    Pitch deck + 5-min demo video      :         p3f, 2026-04-15, 2d
 ```
 
 ---
