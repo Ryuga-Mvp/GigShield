@@ -85,27 +85,27 @@ We chose food delivery over e-commerce or grocery delivery for three concrete re
 ```mermaid
 graph TB
     subgraph EXT["External Data Sources"]
-        W1[OpenWeatherMap API<br/>Rainfall · Temperature]
-        W2[IQAir / CPCB<br/>AQI Data]
-        W3[NDMA Alert Feed<br/>Curfew · Disasters]
-        W4[Mock Platform API<br/>Delivery Activity]
+        W1[OpenWeatherMap API\nRainfall · Temperature]
+        W2[IQAir / CPCB\nAQI Data]
+        W3[NDMA Alert Feed\nCurfew · Disasters]
+        W4[Mock Platform API\nDelivery Activity]
     end
 
     subgraph CORE["Core Backend — Spring Boot (Java 17+)"]
-        TE[Trigger Engine<br/>Polls every 10 min]
-        RE[AI Risk Engine<br/>Premium Calculator]
-        FD[Fraud Detector<br/>Rule + ML Layer]
+        TE[Trigger Engine\nPolls every 10 min]
+        RE[AI Risk Engine\nPremium Calculator]
+        FD[Fraud Detector\nRule + ML Layer]
     end
 
     subgraph ML["ML Service — Python + Flask/FastAPI"]
-        RM[Risk Model<br/>XGBoost]
-        FM[Fraud Model<br/>Isolation Forest]
+        RM[Risk Model\nXGBoost]
+        FM[Fraud Model\nIsolation Forest]
     end
 
     subgraph SVC["Microservices"]
-        CS[Claims Service<br/>Auto-initiation]
-        PS[Policy Service<br/>Weekly Renewal]
-        PY[Payout Service<br/>UPI Transfer]
+        CS[Claims Service\nAuto-initiation]
+        PS[Policy Service\nWeekly Renewal]
+        PY[Payout Service\nUPI Transfer]
     end
 
     subgraph DB["Database — PostgreSQL on Supabase"]
@@ -115,8 +115,8 @@ graph TB
     end
 
     subgraph FE["Frontend — React PWA"]
-        WA[Worker App<br/>Mobile-first]
-        AD[Admin Dashboard<br/>Analytics + Heatmap]
+        WA[Worker App\nMobile-first]
+        AD[Admin Dashboard\nAnalytics + Heatmap]
     end
 
     EXT --> TE
@@ -517,7 +517,7 @@ These are the honest constraints of a university hackathon. The architecture is 
 | Name | Role | Responsibilities |
 |---|---|---|
 | Diptesh Khandual | Backend Lead — Spring Boot Core | Spring Boot project setup, REST controllers (Workers, Policies, Claims, Payouts), Spring Data JPA entities & repositories, Supabase/PostgreSQL integration, application configuration |
-| Harshita Pattnaik | Backend & Frontend — Trigger Engine + React PWA | TriggerEngineService (scheduled polling every 10 min), OpenWeatherMap API integration, PremiumCalcService, React PWA setup with Tailwind CSS, Onboarding & WorkerDashboard pages, UPI deep links, Browser Push API notifications |
+| Harshita Pattnaik & Diptesh Khandual| Backend & Frontend — Trigger Engine + React PWA | TriggerEngineService (scheduled polling every 10 min), OpenWeatherMap API integration, PremiumCalcService, React PWA setup with Tailwind CSS, Onboarding & WorkerDashboard pages, UPI deep links, Browser Push API notifications |
 | Dancy Paul | ML Engineer — Python Service | Synthetic data generation, XGBoost risk model training, Isolation Forest fraud model training, Flask/FastAPI service with `/score-risk` and `/score-fraud` endpoints, REST integration with Spring Boot |
 | Suman Kumar Sahu | ML Engineer — Python Service | Synthetic data generation support, model evaluation & tuning, Flask/FastAPI service testing, mock API controllers (AQI, Curfew, Platform Activity), Razorpay sandbox integration |
 | Durga Prasad Naik | Frontend — Admin Dashboard & QA | AdminPanel page, RiskHeatmap with Leaflet.js + OpenStreetMap, end-to-end integration testing, demo data seeding, pitch deck |
